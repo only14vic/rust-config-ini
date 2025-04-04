@@ -2,7 +2,7 @@
 #[allow(unused_imports)]
 use libc_print::std_name::*;
 use {
-    crate::binds::ini_parse,
+    crate::binds,
     ahash::AHasher,
     alloc::{boxed::Box, string::ToString, vec::Vec},
     core::{
@@ -11,8 +11,7 @@ use {
         hash::BuildHasherDefault,
         ops::Deref
     },
-    indexmap::IndexMap,
-    libc::{access, F_OK}
+    indexmap::IndexMap
 };
 
 pub type IniMap = IndexMap<Box<str>, Option<Box<str>>, BuildHasherDefault<AHasher>>;
@@ -52,11 +51,11 @@ impl Ini {
         let c_path = CStr::from_bytes_with_nul(c_path)?;
 
         unsafe {
-            if access(c_path.as_ptr().cast(), F_OK) != 0 {
+            if libc::access(c_path.as_ptr().cast(), libc::F_OK) != 0 {
                 Err(["Config file not found: ", path.as_ref()].concat())?;
             }
 
-            if ini_parse(
+            if binds::ini_parse(
                 c_path.as_ptr().cast(),
                 Some(Self::ini_parse_callback),
                 (&mut this.items as *mut IniMap).cast()

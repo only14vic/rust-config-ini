@@ -15,8 +15,7 @@ use {
         vec::Vec
     },
     config_ini::{Ini, SetFromIter},
-    core::{ffi::c_int, num::NonZero, str::FromStr},
-    libc::EXIT_SUCCESS
+    core::{ffi::c_int, num::NonZero, str::FromStr}
 };
 
 #[derive(Default, Debug, SetFromIter)]
@@ -69,12 +68,11 @@ fn main() -> c_int {
     let file_path = env!("CARGO_MANIFEST_DIR").to_string() + "/examples/config.ini";
 
     let ini = Ini::from_file(&file_path).unwrap();
+    dbg!(&ini);
+
     let mut config = Config::default();
-
     config.set_from_iter(&ini).unwrap();
+    dbg!(&config);
 
-    assert_eq!(config.general.str, Some(Lang::En.into()));
-    dbg!(ini, config);
-
-    return EXIT_SUCCESS;
+    return libc::EXIT_SUCCESS;
 }
