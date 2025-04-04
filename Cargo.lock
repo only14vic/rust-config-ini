@@ -502,6 +502,8 @@ dependencies = [
 name = "set-from-iter-derive"
 version = "0.1.0"
 dependencies = [
+ "ahash",
+ "indexmap",
  "libc-print",
  "proc-macro2",
  "quote",

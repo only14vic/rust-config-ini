@@ -75,6 +75,8 @@ fn main() -> c_int {
     config.set_from_iter(&ini).unwrap();
     dbg!(&config);
 
+    drop(ini);
+
     #[cfg(not(target_env = "musl"))]
     unsafe {
         libc::malloc_stats()
