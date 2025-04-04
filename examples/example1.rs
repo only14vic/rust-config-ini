@@ -6,7 +6,6 @@ include!("../src/no_std.rs");
 
 extern crate core;
 extern crate alloc;
-extern crate config_ini;
 
 use {
     alloc::{

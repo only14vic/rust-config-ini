@@ -33,11 +33,12 @@ all:
 	$(make) examples static=1
 	$(make) examples-no-std
 	$(make) examples-no-std static=1
-	$(make) check
+	$(make) check info
 
 .PHONY: examples
 examples:
-	@echo ARGS: $(ARGS) RUSTFLAGS: $(RUSTFLAGS)
+	@echo ARGS: $(ARGS)
+	@echo RUSTFLAGS: $(RUSTFLAGS)
 	cargo run  --example example1 $(ARGS)
 
 .PHONY: examples-no-std
@@ -46,9 +47,12 @@ examples-no-std:
 
 .PHONY: check
 check:
-	find target -type f -executable -path "**/release/*/example1" -print \
-		-exec valgrind --tool=memcheck --leak-check=full --error-exitcode=1 {} \;
+	find target -type f -executable -path "**/release/examples/example1" \( \
+			-exec echo -e "-----------------------\n" \; \
+			-exec ls -sh {} \; -exec ldd {} \; \
+			-exec valgrind --tool=memcheck --leak-check=full --error-exitcode=1 {} \; \
+		-o -quit \)
 
 info:
-	find target -type f -executable -path "**/release/*/example1" \
-		-exec ls -sh {} \; -exec ldd {} \; -exec echo \;
+	find target -type f -executable -path "**/release/examples/example1" \
+		-exec ls -sh {} \; -exec ldd {} \; -exec echo -e "------------------------" \;
