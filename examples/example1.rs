@@ -16,7 +16,7 @@ use {
         vec::Vec
     },
     config_ini::{Ini, SetFromIter},
-    core::{ffi::c_int, num::NonZero, str::FromStr}
+    core::{ffi::c_int, num::NonZero, str::FromStr, usize}
 };
 
 #[derive(Default, Debug, SetFromIter)]
@@ -66,16 +66,18 @@ pub struct Foo {
 
 #[no_mangle]
 fn main() -> c_int {
+    const MAX_ITERS: usize = 1000;
     let file_path = env!("CARGO_MANIFEST_DIR").to_string() + "/examples/config.ini";
 
     let mut config = Config::default();
 
-    for _ in 0..1000 {
+    for _ in 0..MAX_ITERS {
         let ini = Ini::from_file(&file_path).unwrap();
         config.set_from_iter(&ini).unwrap();
     }
 
     dbg!(&config);
+    dbg!(MAX_ITERS);
 
     #[cfg(not(target_env = "musl"))]
     unsafe {
