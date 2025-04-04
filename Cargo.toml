@@ -26,7 +26,8 @@ rpath = true
 
 [profile.release]
 opt-level = "z"
-strip = "debuginfo"
+#strip = "debuginfo"
+strip = "symbols"
 lto = "thin"
 codegen-units = 1
 overflow-checks = true
@@ -50,14 +51,14 @@ log = { version = "0.4" }
 dotenv = { version = "0.15" }
 
 [dependencies]
-libc = { version = "0.2", default-features = false, features = [
-  "extra_traits",
-] }
+libc = { version = "0.2", default-features = false }
 libc_alloc = { version = "1.0" }
 libc-print = { version = "0.1" }
 ahash = { version = "0.8", default-features = false }
 indexmap = { version = "2", default-features = false }
 set-from-iter-derive = { path = "../rust-from-iter-derive", default-features = false }
+
+[dev-dependencies]
 
 [lints.rust]
 async_fn_in_trait = "allow"
