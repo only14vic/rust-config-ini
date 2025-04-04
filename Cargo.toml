@@ -26,8 +26,8 @@ rpath = true
 
 [profile.release]
 opt-level = "z"
-#strip = "debuginfo"
-strip = "symbols"
+strip = "debuginfo"
+#strip = "symbols"
 lto = "thin"
 codegen-units = 1
 overflow-checks = true

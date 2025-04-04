@@ -47,11 +47,18 @@ examples-no-std:
 
 .PHONY: check
 check:
-	find target -type f -executable -path "**/release/examples/example1" \( \
+	find target -type f -executable -path "*/release/examples/example1" \( \
 			-exec echo -e "-----------------------\n" \; \
 			-exec ls -sh {} \; -exec ldd {} \; \
 			-exec valgrind --tool=memcheck --leak-check=full --error-exitcode=1 {} \; \
 		-o -quit \)
+
+.PHONY: perf
+perf:
+	perf record -F99 --call-graph dwarf \
+		"$(shell find target -type f -executable -path "*/release/examples/example1" | head -n1)"
+	perf report
+
 
 info:
 	find target -type f -executable -path "**/release/examples/example1" \
