@@ -16,7 +16,7 @@ use {
         vec::Vec
     },
     config_ini::{Ini, SetFromIter},
-    core::{ffi::c_int, hint::black_box, num::NonZero, str::FromStr}
+    core::{ffi::c_int, num::NonZero, str::FromStr}
 };
 
 #[derive(Default, Debug, SetFromIter)]
@@ -66,18 +66,16 @@ pub struct Foo {
 
 #[no_mangle]
 fn main() -> c_int {
-    black_box({
-        let file_path = env!("CARGO_MANIFEST_DIR").to_string() + "/examples/config.ini";
+    let file_path = env!("CARGO_MANIFEST_DIR").to_string() + "/examples/config.ini";
 
-        let mut config = Config::default();
+    let mut config = Config::default();
 
-        for _ in 0..1000 {
-            let ini = Ini::from_file(&file_path).unwrap();
-            config.set_from_iter(&ini).unwrap();
-        }
+    for _ in 0..1000 {
+        let ini = Ini::from_file(&file_path).unwrap();
+        config.set_from_iter(&ini).unwrap();
+    }
 
-        dbg!(&config);
-    });
+    dbg!(&config);
 
     #[cfg(not(target_env = "musl"))]
     unsafe {
