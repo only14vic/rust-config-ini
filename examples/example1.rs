@@ -16,7 +16,7 @@ use {
         vec::Vec
     },
     config_ini::{Ini, SetFromIter},
-    core::{ffi::c_int, num::NonZero, str::FromStr, usize}
+    core::{ffi::c_int, hint::black_box, num::NonZero, str::FromStr, usize}
 };
 
 #[derive(Default, Debug, SetFromIter)]
@@ -73,7 +73,9 @@ fn main() -> c_int {
 
     for _ in 0..MAX_ITERS {
         let ini = Ini::from_file(&file_path).unwrap();
-        config.set_from_iter(&ini).unwrap();
+        black_box({
+            config.set_from_iter(&ini).unwrap();
+        });
     }
 
     dbg!(&config);
