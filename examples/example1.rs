@@ -72,6 +72,7 @@ fn main() -> c_int {
 
     let ini = Ini::from_file(&file_path).unwrap();
     let mut config = Config::default();
+
     config.set_from_iter(&ini).unwrap();
 
     assert_eq!(config.general.str, Some(ConfigEnum::En.into()));

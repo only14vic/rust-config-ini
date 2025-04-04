@@ -62,7 +62,7 @@ impl Ini {
                 (&mut this.items as *mut Items).cast()
             ) != 0
             {
-                Err("Couldn't parse config file.")?;
+                Err(["Parsing error of ini file: ", path.as_ref()].concat())?;
             }
         }
 
