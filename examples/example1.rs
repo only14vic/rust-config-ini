@@ -66,11 +66,11 @@ pub struct Foo {
 
 #[no_mangle]
 fn main() -> c_int {
-    let file_path = env!("CARGO_MANIFEST_DIR").to_string() + "/examples/config.ini";
-
-    let mut config = Config::default();
-
     black_box({
+        let file_path = env!("CARGO_MANIFEST_DIR").to_string() + "/examples/config.ini";
+
+        let mut config = Config::default();
+
         for _ in 0..1000 {
             let ini = Ini::from_file(&file_path).unwrap();
             config.set_from_iter(&ini).unwrap();
