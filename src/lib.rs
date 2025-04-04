@@ -10,4 +10,4 @@ extern crate alloc;
 mod binds;
 mod ini;
 
-pub use ini::*;
+pub use {ini::*, set_from_iter_derive::*};

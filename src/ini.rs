@@ -15,15 +15,15 @@ use {
     libc::{access, F_OK}
 };
 
-pub type Items = IndexMap<Box<str>, Option<Box<str>>, BuildHasherDefault<AHasher>>;
+pub type IniMap = IndexMap<Box<str>, Option<Box<str>>, BuildHasherDefault<AHasher>>;
 
 #[derive(Debug, Clone)]
 pub struct Ini {
-    items: Items
+    items: IniMap
 }
 
 impl Deref for Ini {
-    type Target = Items;
+    type Target = IniMap;
 
     fn deref(&self) -> &Self::Target {
         &self.items
@@ -53,13 +53,13 @@ impl Ini {
 
         unsafe {
             if access(c_path.as_ptr().cast(), F_OK) != 0 {
-                Err("Config file '{path}' not found.".replace("{path}", path.as_ref()))?;
+                Err(["Config file not found: ", path.as_ref()].concat())?;
             }
 
             if ini_parse(
                 c_path.as_ptr().cast(),
                 Some(Self::ini_parse_callback),
-                (&mut this.items as *mut Items).cast()
+                (&mut this.items as *mut IniMap).cast()
             ) != 0
             {
                 Err(["Parsing error of ini file: ", path.as_ref()].concat())?;
@@ -75,7 +75,7 @@ impl Ini {
         name: *const c_char,
         value: *const c_char
     ) -> c_int {
-        let items: &mut Items = &mut *user.cast();
+        let items: &mut IniMap = &mut *user.cast();
         let section = CStr::from_ptr(section);
         let name = CStr::from_ptr(name);
         let value = CStr::from_ptr(value);

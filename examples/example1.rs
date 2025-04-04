@@ -7,7 +7,6 @@ include!("../src/no_std.rs");
 extern crate core;
 extern crate alloc;
 extern crate config_ini;
-extern crate set_from_iter_derive;
 
 use {
     alloc::{
@@ -15,26 +14,25 @@ use {
         string::{String, ToString},
         vec::Vec
     },
-    config_ini::Ini,
+    config_ini::{Ini, SetFromIter},
     core::{ffi::c_int, num::NonZero, str::FromStr},
-    libc::EXIT_SUCCESS,
-    set_from_iter_derive::SetFromIter
+    libc::EXIT_SUCCESS
 };
 
 #[derive(Default, Debug, SetFromIter)]
 pub struct Config {
     version: f32,
-    general: ConfigGeneral
+    general: General
 }
 
 #[derive(Default, Debug, PartialEq)]
-pub enum ConfigEnum {
+pub enum Lang {
     #[default]
     Ru,
     En
 }
 
-impl FromStr for ConfigEnum {
+impl FromStr for Lang {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -47,20 +45,20 @@ impl FromStr for ConfigEnum {
 }
 
 #[derive(Default, Debug, SetFromIter)]
-pub struct ConfigGeneral {
+pub struct General {
     #[parse]
-    str: Option<Box<ConfigEnum>>,
+    str: Option<Box<Lang>>,
     number: u32,
     boolean: bool,
     list: Vec<u32>,
     text: String,
-    foo: ConfigFoo
+    foo: Foo
 }
 
 #[derive(Default, Debug, SetFromIter)]
-pub struct ConfigFoo {
+pub struct Foo {
     #[parse]
-    str: ConfigEnum,
+    str: Lang,
     number: Option<NonZero<u32>>,
     boolean: Option<bool>,
     text: Box<str>
@@ -75,7 +73,7 @@ fn main() -> c_int {
 
     config.set_from_iter(&ini).unwrap();
 
-    assert_eq!(config.general.str, Some(ConfigEnum::En.into()));
+    assert_eq!(config.general.str, Some(Lang::En.into()));
     dbg!(ini, config);
 
     return EXIT_SUCCESS;
