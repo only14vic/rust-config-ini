@@ -1,0 +1,73 @@
+[package]
+name = "config-ini"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+path = "src/lib.rs"
+name = "config_ini"
+crate-type = ["lib"]
+
+[[example]]
+name = "example1"
+path = "examples/example1.rs"
+
+[features]
+default = ["std"]
+std = []
+
+[profile.dev]
+opt-level = 0
+debug = true
+incremental = true
+lto = "fat"
+overflow-checks = true
+rpath = true
+
+[profile.release]
+opt-level = "z"
+strip = "debuginfo"
+lto = "thin"
+codegen-units = 1
+overflow-checks = true
+rpath = true
+
+[profile.dev.package."*"]
+opt-level = "z"
+debug = false
+strip = "symbols"
+
+[profile.release.package."*"]
+opt-level = "z"
+debug = false
+strip = "symbols"
+
+[build-dependencies]
+cc = { version = "1.2" }
+bindgen = { version = "0.71" }
+cbindgen = { version = "0.28" }
+log = { version = "0.4" }
+dotenv = { version = "0.15" }
+
+[dependencies]
+libc = { version = "0.2", default-features = false, features = [
+  "extra_traits",
+] }
+libc_alloc = { version = "1.0" }
+libc-print = { version = "0.1" }
+ahash = { version = "0.8", default-features = false }
+indexmap = { version = "2", default-features = false }
+set-from-iter-derive = { path = "../rust-from-iter-derive", default-features = false }
+
+[lints.rust]
+async_fn_in_trait = "allow"
+hidden_glob_reexports = "allow"
+static_mut_refs = "allow"
+
+[lints.clippy]
+bool_comparison = "allow"
+bool_assert_comparison = "allow"
+needless_return = "allow"
+expect_fun_call = "allow"
+tabs_in_doc_comments = "allow"
+missing_safety_doc = "allow"
