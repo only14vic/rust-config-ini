@@ -4,8 +4,10 @@
 #[cfg(not(feature = "std"))]
 include!("../src/no_std.rs");
 
-extern crate core;
+#[allow(unused_imports)]
+#[macro_use]
 extern crate alloc;
+extern crate core;
 
 use {
     alloc::{
