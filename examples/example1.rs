@@ -64,22 +64,21 @@ pub struct Foo {
     text: Box<str>
 }
 
+const MAX_ITERS: usize = 1000;
+const FILE_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/examples/config.ini");
+
 #[no_mangle]
 fn main() -> c_int {
-    const MAX_ITERS: usize = 1000;
-    let file_path = env!("CARGO_MANIFEST_DIR").to_string() + "/examples/config.ini";
-
     let mut config = Config::default();
 
     for _ in 0..MAX_ITERS {
-        let ini = Ini::from_file(&file_path).unwrap();
         black_box({
+            let ini = Ini::from_file(&FILE_PATH).unwrap();
             config.set_from_iter(&ini).unwrap();
         });
     }
 
-    dbg!(&config);
-    dbg!(MAX_ITERS);
+    dbg!(&config, MAX_ITERS);
 
     #[cfg(not(target_env = "musl"))]
     unsafe {
