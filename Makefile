@@ -9,24 +9,26 @@ ifndef VERBOSE
 endif
 
 make = make --no-print-directory
-RUSTFLAGS = -Clink-arg=-fuse-ld=lld -Clink-args=-lc
+CARGO_ARGS = --release
+RUSTFLAGS = -Ctarget-cpu=native \
+			-Clinker-plugin-lto \
+			-Clink-arg=-fuse-ld=lld \
+			-Clink-arg=-lc
 
 ifeq ($(static),)
 	#CARGO_BUILD_TARGET = x86_64-unknown-linux-gnu
-	RUSTFLAGS += -Clinker-plugin-lto
+	RUSTFLAGS += # -Cprefer-dynamic
 else
 	CARGO_BUILD_TARGET = x86_64-unknown-linux-musl
 	RUSTFLAGS += -Ctarget-feature=+crt-static
 endif
 
-ARGS = --release
-
 ifneq ($(no_std),)
 	RUSTFLAGS += -Cpanic=abort
-	ARGS += --no-default-features
+	CARGO_ARGS += --no-default-features
 endif
 
-ARGS += $(args)
+CARGO_ARGS += $(args)
 
 all:
 	$(make) examples
@@ -37,9 +39,10 @@ all:
 
 .PHONY: examples
 examples:
-	@echo ARGS: $(ARGS)
+	@echo TARGET: $(CARGO_BUILD_TARGET)
+	@echo CARGO_ARGS: $(CARGO_ARGS)
 	@echo RUSTFLAGS: $(RUSTFLAGS)
-	cargo run  --example example1 $(ARGS)
+	cargo run  --example example1 $(CARGO_ARGS)
 
 .PHONY: examples-no-std
 examples-no-std:
@@ -50,7 +53,7 @@ check:
 	find target -type f -executable -path "*/release/examples/example1" \( \
 			-exec echo -e "-----------------------\n" \; \
 			-exec ls -sh {} \; -exec ldd {} \; \
-			-exec valgrind --tool=memcheck --leak-check=full --error-exitcode=1 {} \; \
+			-exec valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --error-exitcode=1 {} \; \
 		-o -quit \)
 
 .PHONY: perf

@@ -4,7 +4,7 @@ use libc_print::std_name::*;
 use {
     crate::binds,
     ahash::AHasher,
-    alloc::{boxed::Box, string::ToString, vec::Vec},
+    alloc::{boxed::Box, string::String, vec::Vec},
     core::{
         error::Error,
         ffi::{c_char, c_int, c_void, CStr},
@@ -79,13 +79,13 @@ impl Ini {
         let name = CStr::from_ptr(name);
         let value = CStr::from_ptr(value);
 
-        let key = if section.is_empty() {
-            name.to_string_lossy().to_string()
+        let key: String = if section.is_empty() {
+            name.to_string_lossy().into_owned()
         } else {
-            section.to_string_lossy().to_string() + "." + &name.to_string_lossy()
+            section.to_string_lossy().into_owned() + "." + &name.to_string_lossy()
         };
 
-        let mut value = value.to_string_lossy().to_string();
+        let mut value: String = value.to_string_lossy().into_owned();
 
         if let (Some(fc), Some(lc)) = (value.chars().next(), value.chars().last()) {
             if ['\'', '\"'].contains(&fc) && fc == lc && value.chars().count() > 1 {

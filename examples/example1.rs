@@ -64,7 +64,7 @@ pub struct Foo {
     text: Box<str>
 }
 
-const MAX_ITERS: usize = 1000;
+const MAX_ITERS: usize = 100_000;
 const FILE_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/examples/config.ini");
 
 #[no_mangle]
