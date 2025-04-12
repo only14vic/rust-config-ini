@@ -24,8 +24,8 @@ fn main() {
     let inc_dir = PathBuf::from_iter([&src_dir, "include"]);
 
     let target_dir = format!(
-        "{}/{}",
-        env::var("CARGO_TARGET_DIR").unwrap(),
+        "{}/../../{}",
+        env::var("OUT_DIR").unwrap(),
         env::var("PROFILE").unwrap()
     );
 
