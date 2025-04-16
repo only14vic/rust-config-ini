@@ -16,7 +16,8 @@ use {
         vec::Vec
     },
     config_ini::{Ini, SetFromIter},
-    core::{ffi::c_int, hint::black_box, num::NonZero, str::FromStr, usize}
+    core::{ffi::c_int, fmt::Write, hint::black_box, num::NonZero, str::FromStr, usize},
+    yansi::Paint
 };
 
 #[derive(Default, Debug, SetFromIter)]
@@ -78,7 +79,11 @@ fn main() -> c_int {
         });
     }
 
-    dbg!(&config, MAX_ITERS);
+    let mut s = String::new();
+    writeln!(&mut s, "{:#?}", &config).unwrap();
+
+    println!("{}", s.bright_yellow().on_black().italic());
+    println!("Max iters: {}", MAX_ITERS.yellow());
 
     #[cfg(not(target_env = "musl"))]
     unsafe {
