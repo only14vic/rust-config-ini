@@ -83,7 +83,7 @@ fn main() -> c_int {
     writeln!(&mut s, "{:#?}", &config).unwrap();
 
     println!("{}", s.bright_yellow().on_black().italic());
-    println!("Max iters: {}", MAX_ITERS.yellow());
+    println!("Max iters: {}", MAX_ITERS.bright_red());
 
     #[cfg(not(target_env = "musl"))]
     unsafe {
