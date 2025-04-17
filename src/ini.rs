@@ -69,7 +69,7 @@ impl Ini {
         Ok(this)
     }
 
-    pub fn dotenv(&self, overwrite: bool) -> Result<&Self, Box<dyn Error>> {
+    pub fn setenv(&self, overwrite: bool) -> Result<&Self, Box<dyn Error>> {
         for (k, v) in self.iter() {
             if let Some(v) = v {
                 let name = CString::from_str(k.as_ref())?;

@@ -76,7 +76,7 @@ const DOTENV_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/.env");
 #[no_mangle]
 fn main() -> c_int {
     if let Ok(env) = Ini::from_file(&DOTENV_PATH) {
-        env.dotenv(false).unwrap();
+        env.setenv(false).unwrap();
     }
 
     log_init();
