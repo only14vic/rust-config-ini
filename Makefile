@@ -15,12 +15,12 @@ RUSTFLAGS = -Ctarget-cpu=native \
 			-Clink-arg=-fuse-ld=lld \
 			-Clink-arg=-lc
 
-ifeq ($(static),)
-	#CARGO_BUILD_TARGET = x86_64-unknown-linux-gnu
-	RUSTFLAGS += # -Cprefer-dynamic
-else
+ifneq ($(static),)
 	CARGO_BUILD_TARGET = x86_64-unknown-linux-musl
 	RUSTFLAGS += -Ctarget-feature=+crt-static
+else
+	#CARGO_BUILD_TARGET = x86_64-unknown-linux-gnu
+	RUSTFLAGS += # -Cprefer-dynamic
 endif
 
 ifneq ($(no_std),)

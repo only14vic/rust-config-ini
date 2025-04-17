@@ -86,7 +86,7 @@ fn main() -> c_int {
             .on_black()
             .italic()
     );
-    println!("Max iters: {}", MAX_ITERS.bright_red());
+    println!("Max iters: {}", MAX_ITERS.bright_red().bold());
     println!(
         "{}\n{}",
         format!("no_std = {}", cfg!(not(feature = "std")))
