@@ -87,14 +87,8 @@ fn main() -> c_int {
 
     println!(
         "Struct {}\nJSON {}",
-        format!("{:#?}", &config)
-            .bright_yellow()
-            .on_black()
-            .italic(),
-        format!("{:#?}", &config_json)
-            .bright_green()
-            .on_black()
-            .italic()
+        format!("{:#?}", &config).bright_blue().italic(),
+        format!("{:#?}", &config_json).blue().italic()
     );
     println!("Max iters: {}", MAX_ITERS.bright_red().bold());
     println!(

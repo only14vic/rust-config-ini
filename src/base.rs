@@ -188,7 +188,7 @@ where
     }
 
     #[inline(always)]
-    fn to_json_str(&self) -> Result<String, serde_json::Error>
+    fn to_json_string(&self) -> Result<String, serde_json::Error>
     where
         Self: Serialize
     {
