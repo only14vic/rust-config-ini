@@ -99,7 +99,10 @@ fn main() -> c_int {
     );
 
     let config_json = config.to_json().unwrap();
-    log::debug!("JSON {}", format!("{:#?}", &config_json).blue().italic());
+    log::debug!(
+        "JSON {}",
+        format!("{:#?}", &config_json).bright_cyan().italic()
+    );
 
     log::info!("Max iters: {}", MAX_ITERS.bright_red().bold());
     log::trace!(

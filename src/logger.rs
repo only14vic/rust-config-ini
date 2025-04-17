@@ -71,7 +71,7 @@ impl Log for Logger {
                 l @ Level::Warn => l.bright_yellow().to_string(),
                 l @ Level::Error => l.bright_red().to_string(),
                 l @ Level::Trace => l.bright_black().to_string(),
-                l @ Level::Debug => l.to_string()
+                l @ Level::Debug => l.bright_cyan().to_string()
             };
             eprintln!(
                 "[{}] [{}] {}",
