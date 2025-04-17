@@ -11,14 +11,14 @@ extern crate core;
 
 #[cfg(not(feature = "std"))]
 #[allow(unused_imports)]
-use libc_print::std_name::*;
+use config_ini::no_std::*;
 use {
     alloc::{
         boxed::Box,
         string::{String, ToString},
         vec::Vec
     },
-    config_ini::{base::BaseFromInto, Ini, SetFromIter},
+    config_ini::{base::BaseFromInto, logger::log_init, Ini, SetFromIter},
     core::{ffi::c_int, hint::black_box, num::NonZero, str::FromStr, usize},
     serde::Serialize,
     yansi::Paint
@@ -71,31 +71,48 @@ pub struct Foo {
 
 const MAX_ITERS: usize = 100_000;
 const FILE_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/examples/config.ini");
+const DOTENV_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/.env");
 
 #[no_mangle]
 fn main() -> c_int {
+    if let Ok(env) = Ini::from_file(&DOTENV_PATH) {
+        env.dotenv(false).unwrap();
+    }
+
+    log_init();
+
     let mut config = Config::default();
 
     for _ in 0..MAX_ITERS {
         black_box({
-            let ini = Ini::from_file(&FILE_PATH).unwrap();
-            config.set_from_iter(&ini).unwrap();
+            let ini = Ini::from_file(&FILE_PATH)
+                .inspect_err(|e| log::error!("{e}"))
+                .unwrap();
+
+            config
+                .set_from_iter(&ini)
+                .inspect_err(|e| log::error!("{e}"))
+                .unwrap();
         });
     }
 
-    let config_json = config.to_json().unwrap();
-
-    println!(
-        "Struct {}\nJSON {}",
-        format!("{:#?}", &config).bright_blue().italic(),
-        format!("{:#?}", &config_json).blue().italic()
+    log::info!(
+        "Struct {}",
+        format!("{:#?}", &config).bright_blue().italic()
     );
-    println!("Max iters: {}", MAX_ITERS.bright_red().bold());
-    println!(
-        "{}\n{}",
+
+    let config_json = config.to_json().unwrap();
+    log::debug!("JSON {}", format!("{:#?}", &config_json).blue().italic());
+
+    log::info!("Max iters: {}", MAX_ITERS.bright_red().bold());
+    log::trace!(
+        "{}",
         format!("no_std = {}", cfg!(not(feature = "std")))
             .red()
-            .on_green(),
+            .on_green()
+    );
+    log::trace!(
+        "{}",
         format!("static = {}", cfg!(target_env = "musl"))
             .blue()
             .on_bright_green()

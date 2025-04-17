@@ -1,12 +1,6 @@
 use {
     dotenv::dotenv,
-    std::{
-        env::{self},
-        ffi::OsStr,
-        fs::create_dir_all,
-        path::PathBuf,
-        process::Command
-    }
+    std::{env, ffi::OsStr, fs::create_dir_all, path::PathBuf, process::Command}
 };
 
 fn main() {
@@ -34,7 +28,6 @@ fn main() {
     //
     println!("cargo::rustc-link-search={target_dir}");
     //println!("cargo::rustc-link-lib=inih");
-    //println!("cargo::rustc-link-lib=app_nostd");
 
     //
     // Binding C code
@@ -94,6 +87,8 @@ fn main() {
         "Unsuccessful status code when running `rustfmt`: {output:?}",
     );
 
+    /*
+
     //println!("cargo:warning={:?} was formatted successfully.", &out_path);
 
     //
@@ -113,4 +108,5 @@ fn main() {
         .generate()
         .expect("Unable to generate bindings")
         .write_to_file(cbindgens_filename);
+    */
 }

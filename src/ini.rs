@@ -4,12 +4,13 @@ use libc_print::std_name::*;
 use {
     crate::binds,
     ahash::AHasher,
-    alloc::{boxed::Box, string::String, vec::Vec},
+    alloc::{boxed::Box, ffi::CString, string::String, vec::Vec},
     core::{
         error::Error,
         ffi::{c_char, c_int, c_void, CStr},
         hash::BuildHasherDefault,
-        ops::Deref
+        ops::Deref,
+        str::FromStr
     },
     indexmap::IndexMap
 };
@@ -61,11 +62,29 @@ impl Ini {
                 (&mut this.items as *mut IniMap).cast()
             ) != 0
             {
-                Err(["Parsing error of ini file: ", path.as_ref()].concat())?;
+                Err(["Couldn't parse INI file: ", path.as_ref()].concat())?;
             }
         }
 
         Ok(this)
+    }
+
+    pub fn dotenv(&self, overwrite: bool) -> Result<&Self, Box<dyn Error>> {
+        for (k, v) in self.iter() {
+            if let Some(v) = v {
+                let name = CString::from_str(k.as_ref())?;
+                let value = CString::from_str(v.as_ref())?;
+                unsafe {
+                    libc::setenv(
+                        name.as_ptr().cast(),
+                        value.as_ptr().cast(),
+                        overwrite.into()
+                    );
+                }
+            }
+        }
+
+        Ok(self)
     }
 
     unsafe extern "C" fn ini_parse_callback(
