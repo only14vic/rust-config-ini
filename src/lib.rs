@@ -5,11 +5,12 @@
 extern crate core;
 extern crate alloc;
 
+#[cfg(not(feature = "std"))]
+pub use libc_print::std_name::*;
+
 mod binds;
 mod ini;
 
-#[cfg(not(feature = "std"))]
-pub mod no_std;
 pub mod base;
 pub mod logger;
 

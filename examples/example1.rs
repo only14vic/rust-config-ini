@@ -9,9 +9,10 @@
 extern crate alloc;
 extern crate core;
 
+// Use include!() to overwrite GLOBAL_ALLOC
 #[cfg(not(feature = "std"))]
-#[allow(unused_imports)]
-use config_ini::no_std::*;
+include!("../src/no_std.rs");
+
 use {
     alloc::{
         boxed::Box,

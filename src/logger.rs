@@ -9,9 +9,8 @@ use {
     log::{Level, LevelFilter, Log, ParseLevelError},
     yansi::Paint
 };
-
 #[cfg(not(feature = "std"))]
-use crate::no_std::*;
+use libc_print::std_name::*;
 
 static LOGGER: Logger = Logger;
 

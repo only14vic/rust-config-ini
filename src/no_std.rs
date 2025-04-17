@@ -1,6 +1,6 @@
 use {core::panic::PanicInfo, libc::abort, libc_alloc::LibcAlloc};
 #[allow(unused_imports)]
-pub use libc_print::std_name::*;
+use libc_print::std_name::*;
 
 #[global_allocator]
 static GLOBAL_ALLOC: LibcAlloc = LibcAlloc;

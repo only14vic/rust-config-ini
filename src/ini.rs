@@ -2,11 +2,13 @@
 #[allow(unused_imports)]
 use libc_print::std_name::*;
 use {
-    crate::binds,
+    crate::{
+        base::{BaseFromInto, Ok},
+        binds
+    },
     ahash::AHasher,
     alloc::{boxed::Box, ffi::CString, string::String, vec::Vec},
     core::{
-        error::Error,
         ffi::{c_char, c_int, c_void, CStr},
         hash::BuildHasherDefault,
         ops::Deref,
@@ -45,7 +47,7 @@ impl<'a> IntoIterator for &'a Ini {
 }
 
 impl Ini {
-    pub fn from_file(path: &dyn AsRef<str>) -> Result<Self, Box<dyn Error>> {
+    pub fn from_file(path: &dyn AsRef<str>) -> Ok<Self> {
         let mut this = Self { items: Default::default() };
 
         let c_path = &[path.as_ref().as_bytes(), b"\0"].concat();
@@ -66,10 +68,10 @@ impl Ini {
             }
         }
 
-        Ok(this)
+        this.into_ok()
     }
 
-    pub fn setenv(&self, overwrite: bool) -> Result<&Self, Box<dyn Error>> {
+    pub fn setenv(&self, overwrite: bool) -> Ok<&Self> {
         for (k, v) in self.iter() {
             if let Some(v) = v {
                 let name = CString::from_str(k.as_ref())?;
@@ -84,14 +86,14 @@ impl Ini {
             }
         }
 
-        Ok(self)
+        self.into_ok()
     }
 
-    pub fn dotenv(overwrite: bool) -> Result<Self, Box<dyn Error>> {
+    pub fn dotenv(overwrite: bool) -> Ok<Self> {
         let ini = Self::from_file(&".env")?;
         ini.setenv(overwrite)?;
 
-        Ok(ini)
+        ini.into_ok()
     }
 
     unsafe extern "C" fn ini_parse_callback(
