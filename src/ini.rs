@@ -87,6 +87,13 @@ impl Ini {
         Ok(self)
     }
 
+    pub fn dotenv(overwrite: bool) -> Result<Self, Box<dyn Error>> {
+        let ini = Self::from_file(&".env")?;
+        ini.setenv(overwrite)?;
+
+        Ok(ini)
+    }
+
     unsafe extern "C" fn ini_parse_callback(
         user: *mut c_void,
         section: *const c_char,

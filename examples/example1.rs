@@ -71,14 +71,10 @@ pub struct Foo {
 
 const MAX_ITERS: usize = 100_000;
 const FILE_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/examples/config.ini");
-const DOTENV_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/.env");
 
 #[no_mangle]
 fn main() -> c_int {
-    if let Ok(env) = Ini::from_file(&DOTENV_PATH) {
-        env.setenv(false).unwrap();
-    }
-
+    let _ = Ini::dotenv(false);
     log_init();
 
     let mut config = Config::default();
