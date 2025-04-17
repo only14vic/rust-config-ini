@@ -6,18 +6,15 @@ use {
         base::{BaseFromInto, Ok},
         binds
     },
-    ahash::AHasher,
     alloc::{boxed::Box, ffi::CString, string::String, vec::Vec},
     core::{
         ffi::{c_char, c_int, c_void, CStr},
-        hash::BuildHasherDefault,
         ops::Deref,
         str::FromStr
-    },
-    indexmap::IndexMap
+    }
 };
 
-pub type IniMap = IndexMap<Box<str>, Option<Box<str>>, BuildHasherDefault<AHasher>>;
+pub type IniMap = crate::base::IndexMap<Box<str>, Option<Box<str>>>;
 
 #[derive(Debug, Clone)]
 pub struct Ini {
