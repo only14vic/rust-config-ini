@@ -1,6 +1,7 @@
 #![allow(unused)]
 
 use {
+    ahash::AHasher,
     alloc::{
         boxed::Box,
         string::{String, ToString}
@@ -9,10 +10,14 @@ use {
         any::type_name_of_val,
         error::Error,
         fmt::{self, Debug, Display},
+        hash::BuildHasherDefault,
         ops::Deref
     },
     serde::{de::DeserializeOwned, Deserialize, Serialize}
 };
+
+pub type IndexMap<K, V, S = BuildHasherDefault<AHasher>> = indexmap::IndexMap<K, V, S>;
+pub type IndexSet<V, S = BuildHasherDefault<AHasher>> = indexmap::IndexSet<V, S>;
 
 #[derive(PartialEq, Eq)]
 pub struct ErrBox<E: ?Sized>(Box<E>);
