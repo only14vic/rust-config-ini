@@ -1,32 +1,36 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 #![no_main]
 
-#[cfg(not(feature = "std"))]
-include!("../src/no_std.rs");
+//#[cfg(not(feature = "std"))]
+//include!("../src/no_std.rs");
 
 #[allow(unused_imports)]
 #[macro_use]
 extern crate alloc;
 extern crate core;
 
+#[cfg(not(feature = "std"))]
+#[allow(unused_imports)]
+use libc_print::std_name::*;
 use {
     alloc::{
         boxed::Box,
         string::{String, ToString},
         vec::Vec
     },
-    config_ini::{Ini, SetFromIter},
+    config_ini::{base::BaseFromInto, Ini, SetFromIter},
     core::{ffi::c_int, hint::black_box, num::NonZero, str::FromStr, usize},
+    serde::Serialize,
     yansi::Paint
 };
 
-#[derive(Default, Debug, SetFromIter)]
+#[derive(Default, Debug, Serialize, SetFromIter)]
 pub struct Config {
     version: f32,
     general: General
 }
 
-#[derive(Default, Debug, PartialEq)]
+#[derive(Default, Debug, PartialEq, Serialize)]
 pub enum Lang {
     #[default]
     Ru,
@@ -45,7 +49,7 @@ impl FromStr for Lang {
     }
 }
 
-#[derive(Default, Debug, SetFromIter)]
+#[derive(Default, Debug, Serialize, SetFromIter)]
 pub struct General {
     #[parse]
     str: Option<Box<Lang>>,
@@ -56,7 +60,7 @@ pub struct General {
     foo: Foo
 }
 
-#[derive(Default, Debug, SetFromIter)]
+#[derive(Default, Debug, Serialize, SetFromIter)]
 pub struct Foo {
     #[parse]
     str: Lang,
@@ -79,10 +83,16 @@ fn main() -> c_int {
         });
     }
 
+    let config_json = config.to_json().unwrap();
+
     println!(
-        "{}",
+        "Struct {}\nJSON {}",
         format!("{:#?}", &config)
             .bright_yellow()
+            .on_black()
+            .italic(),
+        format!("{:#?}", &config_json)
+            .bright_green()
             .on_black()
             .italic()
     );

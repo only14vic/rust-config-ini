@@ -200,6 +200,8 @@ dependencies = [
  "libc-print",
  "libc_alloc",
  "log",
+ "serde",
+ "serde_json",
  "set-from-iter-derive",
  "yansi",
 ]
